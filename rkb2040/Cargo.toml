@@ -1,0 +1,22 @@
+[package]
+name = "rkb2040"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cortex-m-rt = { workspace = true }
+sea-picro = { path = "../bsp/sea-picro" }
+
+[features]
+default = []
+# Release and debuging features.
+serial = []
+hiddev = []
+# Left and right halfs of the keyboard.
+right = []
+left = []
+# Boards.
+sea-picro = []
+
+[lints]
+workspace = true

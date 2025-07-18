@@ -1,0 +1,22 @@
+[workspace]
+resolver = "3"
+members = [ "bsp/sea-picro","rkb2040", "rkb2040-lib"]
+
+[workspace.dependencies]
+cortex-m-rt = "0.7.5"
+fugit = "0.3.7"
+rp2040-boot2 = "0.3.0"
+rp2040-hal = "0.11.0"
+usb-device = "0.3.1"
+
+[workspace.lints]
+clippy.pedantic = { level = "warn", priority = -1 }
+clippy.inline_always = "allow"
+clippy.allow_attributes = "warn"
+clippy.match_same_arms = "allow"
+clippy.module_name_repetitions = "allow"
+clippy.new_without_default = "allow"
+clippy.similar_names = "allow"
+clippy.too_many_arguments = "allow"
+clippy.type_complexity = "allow"
+clippy.unnested_or_patterns = "allow"
