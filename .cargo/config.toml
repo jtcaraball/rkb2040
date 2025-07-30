@@ -34,11 +34,9 @@ rustflags = [
     "-C", "no-vectorize-loops",
 ]
 
-[profile.release]
+[profile.lto]
 codegen-units = 1
-debug = 2
-debug-assertions = false
-incremental = false
-lto = 'fat'
-opt-level = 3
-overflow-checks = false
+debug = false
+inherits = "release"
+lto = true
+strip = true
