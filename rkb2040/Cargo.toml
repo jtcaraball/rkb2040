@@ -4,19 +4,28 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-cortex-m-rt = { workspace = true }
-sea-picro = { path = "../bsp/sea-picro" }
+cortex-m.workspace = true
+cortex-m-rt.workspace = true
+embedded-hal.workspace = true
+rp2040-hal.workspace = true
+usb-device.workspace = true
+sea-picro.workspace = true
+rkb2040-lib.workspace = true
+rkb2040-proc.workspace = true
+paste.workspace = true
+pio-uart.workspace = true
 
 [features]
-default = []
+default = ["sweep2", "serial"]
 # Release and debuging features.
 serial = []
-hiddev = []
+hid = []
 # Left and right halfs of the keyboard.
 right = []
 left = []
-# Boards.
-sea-picro = []
+# Keyboards
+sweep2 = []
+skeletyl = []
 
 [lints]
 workspace = true

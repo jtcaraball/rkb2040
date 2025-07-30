@@ -1,14 +1,14 @@
 #![cfg_attr(not(test), no_std)]
 #![no_main]
-// Use sea_picro as source for board support package.
-#![cfg(feature = "sea-picro")]
-use sea_picro as bsp;
 
-use bsp::entry;
+mod keyboards;
+
+#[cfg(feature = "sweep2")]
+use keyboards::sweep2::{bsp::entry};
 
 #[entry]
 fn main() -> ! {
-    loop {}
+    todo!()
 }
 
 #[panic_handler]
