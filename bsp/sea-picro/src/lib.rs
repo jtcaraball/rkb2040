@@ -544,6 +544,10 @@ hal::bsp_pins!(
         }
     },
 
+    Gpio19 {
+        name: vbus_detect,
+    },
+
     /// GPIO 20 supports following functions:
     ///
     /// | Function     | Alias with applied function |
