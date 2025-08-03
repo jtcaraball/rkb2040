@@ -1,18 +1,20 @@
-use core::mem::MaybeUninit;
-
 pub struct QueueErr;
 
 pub type Result<T> = core::result::Result<T, QueueErr>;
 
-pub struct Queue<T, const N: usize> {
+pub struct Queue<T, const N: usize>
+where
+    T: Default + Copy,
+{
     head: usize,
     tail: usize,
-    buf: [MaybeUninit<T>; N],
+    buf: [T; N],
 }
 
-impl<T, const N: usize> Queue<T, N> {
-    const NULL: MaybeUninit<T> = MaybeUninit::uninit();
-
+impl<T, const N: usize> Queue<T, N>
+where
+    T: Default + Copy,
+{
     /// # Errors
     ///
     /// Returs `QueueErr` if the queue is full.
@@ -22,12 +24,7 @@ impl<T, const N: usize> Queue<T, N> {
         if next == self.head {
             return Err(QueueErr);
         }
-        unsafe {
-            self.buf
-                .get_unchecked_mut(self.tail)
-                .as_mut_ptr()
-                .write(val);
-        }
+        self.buf[self.tail] = val;
         self.tail = next;
         Ok(())
     }
@@ -37,7 +34,7 @@ impl<T, const N: usize> Queue<T, N> {
         if self.head == self.tail {
             return None;
         }
-        unsafe { self.buf.get_unchecked(self.head).as_ptr().as_ref() }
+        Some(&self.buf[self.head])
     }
 
     #[inline]
@@ -45,16 +42,16 @@ impl<T, const N: usize> Queue<T, N> {
         if self.head == self.tail {
             return None;
         }
-        let val = unsafe { self.buf.get_unchecked_mut(self.head).as_ptr().read() };
+        let val = self.buf[self.head];
         self.head = (self.head + 1) % N;
         Some(val)
     }
 
     #[inline]
     #[must_use]
-    pub const fn new() -> Self {
+    pub fn new() -> Self {
         Self {
-            buf: [Self::NULL; N],
+            buf: [T::default(); N],
             head: 0,
             tail: 0,
         }

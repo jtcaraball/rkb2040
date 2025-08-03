@@ -9,6 +9,7 @@ cortex-m-rt.workspace = true
 embedded-hal.workspace = true
 rp2040-hal.workspace = true
 usb-device.workspace = true
+usbd-human-interface-device.workspace = true
 sea-picro.workspace = true
 rkb2040-lib.workspace = true
 rkb2040-proc.workspace = true
@@ -16,13 +17,7 @@ paste.workspace = true
 pio-uart.workspace = true
 
 [features]
-default = ["sweep2", "serial"]
-# Release and debuging features.
-serial = []
-hid = []
-# Left and right halfs of the keyboard.
-right = []
-left = []
+default = ["sweep2"]
 # Keyboards
 sweep2 = []
 skeletyl = []

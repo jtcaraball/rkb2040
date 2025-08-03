@@ -4,11 +4,11 @@
 mod keyboards;
 
 #[cfg(feature = "sweep2")]
-use keyboards::sweep2::{bsp::entry};
+use keyboards::sweep2::{bsp::entry, runtime::run};
 
 #[entry]
 fn main() -> ! {
-    todo!()
+    run();
 }
 
 #[panic_handler]

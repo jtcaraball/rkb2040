@@ -1,36 +1,38 @@
 #[macro_export]
 macro_rules! impl_direct_wire_primary_keyboard {
-    ($rx:ty, $($id:tt),*) => {
+    ($delay:tt, $rx:ty, $sm:ty, $($id:tt),*) => {
         paste::paste! {
             pub struct PrimaryKB {
                 pub keys: (
-                    $($crate::pins::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >]>,)*
+                    $($crate::pin::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >], $delay>,)*
                 ),
                 pub rx: $rx,
-                pub cb: fn(u8),
+                pub sm: $sm,
             }
 
             impl PrimaryKB {
                 #[must_use]
                 pub fn new(
                     keys: (
-                        $($crate::pins::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >]>,)*
+                        $($crate::pin::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >], $delay>,)*
                     ),
                     rx: $rx,
-                    cb: fn(u8),
+                    sm: $sm,
                 ) -> Self {
-                    Self { keys, rx, cb }
+                    Self { keys, rx, sm }
                 }
 
                 pub fn scan(&mut self, timer: rp2040_hal::Timer) {
+                    self.sm.begin_scan();
                     rkb2040_proc::direct_pin_rx_check!(self, timer, $($id,)*);
+                    self.sm.finish_scan();
                 }
             }
 
             macro_rules! init_primary_pins {
                 ($_pins:ident) => {
                     (
-                        $($crate::pins::DirectKeyPin::new($_pins.[< gpio $id >].into_pull_up_input()),)*
+                        $($crate::pin::DirectKeyPin::new($_pins.[< gpio $id >].into_pull_up_input()),)*
                     )
                 }
             }
@@ -41,11 +43,11 @@ macro_rules! impl_direct_wire_primary_keyboard {
 
 #[macro_export]
 macro_rules! impl_direct_wire_secondary_keyboard {
-    ($tx:ty, $($id:tt),*) => {
+    ($delay:tt, $tx:ty, $($id:tt),*) => {
         paste::paste! {
             pub struct SecondaryKB {
                 pub keys: (
-                    $($crate::pins::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >]>,)*
+                    $($crate::pin::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >], $delay>,)*
                 ),
                 pub tx: $tx,
             }
@@ -54,7 +56,7 @@ macro_rules! impl_direct_wire_secondary_keyboard {
                 #[must_use]
                 pub fn new(
                     keys: (
-                        $($crate::pins::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >]>,)*
+                        $($crate::pin::DirectKeyPin<rp2040_hal::gpio::bank0::[< Gpio $id >], $delay>,)*
                     ),
                     tx: $tx,
                 ) -> Self {
@@ -69,7 +71,7 @@ macro_rules! impl_direct_wire_secondary_keyboard {
             macro_rules! init_secondary_pins {
                 ($_pins:ident) => {
                     (
-                        $($crate::pins::DirectKeyPin::new($_pins.[< gpio $id >].into_pull_up_input()),)*
+                        $($crate::pin::DirectKeyPin::new($_pins.[< gpio $id >].into_pull_up_input()),)*
                     )
                 }
             }

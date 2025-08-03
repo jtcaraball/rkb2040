@@ -8,6 +8,7 @@ rp2040-hal.workspace = true
 pio-uart.workspace = true
 paste.workspace = true
 usb-device.workspace = true
+usbd-human-interface-device.workspace = true
 rkb2040-proc.workspace = true
 
 [lints]

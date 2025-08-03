@@ -41,7 +41,6 @@ pub fn direct_pin_check_impl(input: TokenStream) -> TokenStream {
         let index = Index::from(i);
         quote! {
             {
-                let bank = rp2040_hal::Sio::read_bank0();
                 let key_mask = 1 << #pin_id;
                 let pressed = bank & key_mask == 0;
                 if #kb.keys.#index.state.pressed != pressed &&
@@ -53,6 +52,7 @@ pub fn direct_pin_check_impl(input: TokenStream) -> TokenStream {
         }
     });
     quote!({
+        let bank = rp2040_hal::Sio::read_bank0();
         #(
             #pin_checks
         )*
@@ -69,22 +69,22 @@ pub fn direct_pin_rx_check_impl(input: TokenStream) -> TokenStream {
     let pin_checks = desc.entries.into_iter().enumerate().map(|(i, pin_id)| {
         let index = Index::from(i);
         quote! {
-            let bank = rp2040_hal::Sio::read_bank0();
-            let key_mask = 1 << #pin_id;
-            let pressed = bank & key_mask == 0;
-            if #kb.keys.#index.state.pressed != pressed &&
-                #kb.keys.#index.state.debounce.update(#timer.get_counter(), pressed) {
-                #kb.keys.#index.state.pressed = pressed;
-                // Ignoring result as we check for capacity in scan before adding.
-                (#kb.cb)(if pressed {#index + 0b1000_0000} else {#index});
-            }
-            if let Some(msg) = #kb.rx.receive_byte() {
-                // Ignoring result as we check for capacity in scan before adding.
-                (#kb.cb)(msg + #pin_count);
+            {
+                let key_mask = 1 << #pin_id;
+                let pressed = bank & key_mask == 0;
+                if #kb.keys.#index.state.pressed != pressed &&
+                    #kb.keys.#index.state.debounce.update(#timer.get_counter(), pressed) {
+                    #kb.keys.#index.state.pressed = pressed;
+                    #kb.sm.register_press(if pressed {#index + 0b1000_0000} else {#index})
+                }
+                if let Some(msg) = #kb.rx.receive_byte() {
+                    #kb.sm.register_press(msg + #pin_count)
+                }
             }
         }
     });
     quote!({
+        let bank = rp2040_hal::Sio::read_bank0();
         #(
             #pin_checks
         )*

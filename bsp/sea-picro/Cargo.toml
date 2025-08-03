@@ -8,7 +8,6 @@ cortex-m-rt = { workspace = true, optional = true }
 fugit.workspace = true
 rp2040-boot2 = { workspace = true, optional = true }
 rp2040-hal.workspace = true
-usb-device.workspace = true
 
 [features]
 # This is the set of features we enable by default

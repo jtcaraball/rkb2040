@@ -1,13 +1,11 @@
 use rp2040_hal::timer::Instant;
 
-const QUARANTINE_MICROS: u64 = 10_000;
-
-pub struct PinState {
+pub struct PinState<const D: u64> {
     pub pressed: bool,
-    pub debounce: PinDebouncer,
+    pub debounce: PinDebouncer<D>,
 }
 
-impl PinState {
+impl<const D: u64> PinState<D> {
     #[must_use]
     pub const fn new() -> Self {
         Self {
@@ -18,12 +16,12 @@ impl PinState {
 }
 
 #[derive(Copy, Clone, Debug, Default)]
-pub struct PinDebouncer {
+pub struct PinDebouncer<const D: u64> {
     last_touch: Option<Instant>,
     quarentined: Option<bool>,
 }
 
-impl PinDebouncer {
+impl<const D: u64> PinDebouncer<D> {
     #[must_use]
     pub const fn new() -> Self {
         Self {
@@ -41,7 +39,7 @@ impl PinDebouncer {
             self.last_touch = Some(now);
             return true;
         };
-        if diff.to_micros() < QUARANTINE_MICROS {
+        if diff.to_micros() < D {
             if self.quarentined != Some(state) {
                 self.quarentined = Some(state);
                 self.last_touch = Some(now);

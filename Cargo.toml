@@ -18,6 +18,7 @@ syn = "2.0.104"
 quote = "1.0.40"
 pio-uart = { git = "https://github.com/jtcaraball/pio-uart" }
 usb-device = { version = "0.3.2", default-features = false}
+usbd-human-interface-device = "0.6.0"
 
 [workspace.lints]
 clippy.pedantic = { level = "warn", priority = -1 }
