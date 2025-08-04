@@ -10,7 +10,7 @@ use {
     rp2040_hal::pio::PIOExt,
 };
 
-const DEBOUNCE_DELAY: u64 = 30_000;
+const DEBOUNCE_DELAY: u64 = 50_000;
 
 impl_trrs_tx!(PIO0, RESETS, Gpio1, FunctionNull, PullDown);
 impl_trrs_rx!(PIO0, RESETS, Gpio1, FunctionNull, PullDown);
@@ -29,5 +29,5 @@ impl_direct_wire_secondary_keyboard!(
     29, 28, 27, 26, 7, // Top row pins.
     0, 21, 23, 20, 22, // Middle row pins.
     6, 5, 4, 3, 2, // Bottom row pins.
-    8, 9 // Thumb cluster pins.
+    9, 8 // Thumb cluster pins.
 );

@@ -107,9 +107,7 @@ macro_rules! run_primary_keyboard {
 macro_rules! run_secondary_keyboard {
     ($kb:ident, $timer:ident, $scan_cd:ident) => {
         loop {
-            if $scan_cd.wait().is_ok() {
-                $kb.scan($timer);
-            }
+            $kb.scan($timer);
         }
     };
 }
