@@ -5,6 +5,8 @@ mod keyboards;
 
 #[cfg(feature = "sweep2")]
 use keyboards::sweep2::{bsp::entry, runtime::run};
+#[cfg(feature = "skeletyl")]
+use keyboards::skeletyl::{bsp::entry, runtime::run};
 
 #[entry]
 fn main() -> ! {

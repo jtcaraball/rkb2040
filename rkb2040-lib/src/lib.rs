@@ -1,6 +1,5 @@
 #![cfg_attr(not(test), no_std)]
 
-pub mod debounce;
 pub mod keyboard;
 pub mod keymap;
 pub mod pin;

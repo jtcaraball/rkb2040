@@ -1,6 +1,7 @@
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
+    Result,
     parse::{Parse, ParseStream},
     {ExprPath, Ident, Index, LitInt, Token, parse_macro_input},
 };
@@ -12,7 +13,7 @@ struct PinDesc {
 }
 
 impl Parse for PinDesc {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
+    fn parse(input: ParseStream) -> Result<Self> {
         let kb = input.parse::<ExprPath>()?;
         input.parse::<Token![,]>()?;
         let timer = input.parse::<Ident>()?;
@@ -75,7 +76,7 @@ pub fn direct_pin_rx_check_impl(input: TokenStream) -> TokenStream {
                 if #kb.keys.#index.state.pressed != pressed &&
                     #kb.keys.#index.state.debounce.update(#timer.get_counter(), pressed) {
                     #kb.keys.#index.state.pressed = pressed;
-                    #kb.sm.register_press(if pressed {#index + 0b1000_0000} else {#index})
+                    #kb.sm.register_press(if pressed {#index + 0b1000_0000} else {#index});
                 }
                 if let Some(msg) = #kb.rx.receive_byte() {
                     #kb.sm.register_press(msg + #pin_count)

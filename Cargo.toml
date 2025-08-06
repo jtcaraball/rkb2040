@@ -1,11 +1,12 @@
 [workspace]
 resolver = "3"
-members = [ "bsp/sea-picro", "rkb2040-proc", "rkb2040", "rkb2040-lib"]
+members = [ "bsp/sea-picro", "bsp/splinky", "rkb2040-proc", "rkb2040", "rkb2040-lib"]
 
 [workspace.dependencies]
 rkb2040-lib = { path = "rkb2040-lib" }
 rkb2040-proc = { path = "rkb2040-proc" }
 sea-picro = { path = "bsp/sea-picro" }
+splinky = { path = "bsp/splinky" }
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
 critical-section = "1.2.0"
@@ -16,6 +17,7 @@ rp2040-hal = "0.11.0"
 paste = "1.0.15"
 syn = "2.0.104"
 quote = "1.0.40"
+proc-macro2 = { version = "1.0.80", default-features = false }
 pio-uart = { git = "https://github.com/jtcaraball/pio-uart" }
 usb-device = { version = "0.3.2", default-features = false}
 usbd-human-interface-device = "0.6.0"
