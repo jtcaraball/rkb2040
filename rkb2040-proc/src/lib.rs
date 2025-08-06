@@ -13,13 +13,13 @@ pub fn direct_pin_rx_check(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
-pub fn matrix_to_states(input: TokenStream) -> TokenStream {
-    matrix_keyboard::matrix_to_states_impl(input)
+pub fn keys_to_states(input: TokenStream) -> TokenStream {
+    matrix_keyboard::keys_to_states_impl(input)
 }
 
 #[proc_macro]
-pub fn matrix_to_states_init(input: TokenStream) -> TokenStream {
-    matrix_keyboard::matrix_to_states_init_impl(input)
+pub fn keys_to_states_init(input: TokenStream) -> TokenStream {
+    matrix_keyboard::keys_to_states_init_impl(input)
 }
 
 #[proc_macro]

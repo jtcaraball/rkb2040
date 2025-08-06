@@ -83,16 +83,14 @@ macro_rules! impl_direct_wire_secondary_keyboard {
 
 #[macro_export]
 macro_rules! impl_matrix_primary_keyboard {
-    ($delay:tt, $rx:ty, $sm:ty, $(matrix: (cols: ($($cid:tt),*), rows: ($($rid:tt),*))),*) => {
+    ($delay:tt, $rx:ty, $sm:ty, matrix: (cols: ($($cid:tt),*), rows: ($($rid:tt),*)), keys: ($(($c:tt, $r:tt)),*)) => {
         paste::paste! {
             pub struct PrimaryKB {
-                pub matrices: (
-                    $((
-                        ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
-                        ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
-                    ),),*
+                pub matrix: (
+                    ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
+                    ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
                 ),
-                pub keys: rkb2040_proc::matrix_to_states!($crate::pin::PinState<$delay>, $((($($cid),*), ($($rid),*))),*),
+                pub keys: rkb2040_proc::keys_to_states!($crate::pin::PinState<$delay>, $(($c, $r)),*),
                 pub rx: $rx,
                 pub sm: $sm,
             }
@@ -100,22 +98,20 @@ macro_rules! impl_matrix_primary_keyboard {
             impl PrimaryKB {
                 #[must_use]
                 pub fn new(
-                    matrices: (
-                        $((
-                            ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
-                            ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
-                        ),),*
+                    matrix: (
+                        ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
+                        ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
                     ),
-                    keys: rkb2040_proc::matrix_to_states!($crate::pin::PinState<$delay>, $((($($cid),*), ($($rid),*))),*),
+                    keys: rkb2040_proc::keys_to_states!($crate::pin::PinState<$delay>, $(($c, $r)),*),
                     rx: $rx,
                     sm: $sm,
                 ) -> Self {
-                    Self { matrices, keys, rx, sm }
+                    Self { matrix, keys, rx, sm }
                 }
 
                 pub fn scan(&mut self, timer: rp2040_hal::Timer) {
                     self.sm.begin_scan();
-                    rkb2040_proc::matrix_pin_rx_check!(self, timer, $((($($cid),*), ($($rid),*))),*);
+                    rkb2040_proc::matrix_pin_rx_check!(self, timer, (($($cid),*), ($($rid),*)), $(($c, $r)),*);
                     self.sm.finish_scan();
                 }
             }
@@ -123,12 +119,10 @@ macro_rules! impl_matrix_primary_keyboard {
             macro_rules! init_primary_pins {
                 ($_pins:ident) => {(
                     (
-                        $((
-                            ($(Some($_pins.[< gpio $cid >].into_pull_up_input())),*,),
-                            ($($_pins.[< gpio $rid >].into_pull_up_input()),*,),
-                        ),),*
+                        ($(Some($_pins.[< gpio $cid >].into_pull_up_input())),*,),
+                        ($($_pins.[< gpio $rid >].into_pull_up_input()),*,),
                     ),
-                    rkb2040_proc::matrix_to_states_init!($crate::pin::PinState, $((($($cid),*), ($($rid),*))),*)
+                    rkb2040_proc::keys_to_states_init!($crate::pin::PinState, $(($c, $r)),*)
                 )}
             }
             pub(crate) use init_primary_pins;
@@ -138,55 +132,45 @@ macro_rules! impl_matrix_primary_keyboard {
 
 #[macro_export]
 macro_rules! impl_matrix_secondary_keyboard {
-    ($delay:tt, $tx:ty, $sm:ty, $(matrix: (cols: ($($cid:tt),*), rows: ($($rid:tt),*))),*) => {
+    ($delay:tt, $tx:ty, matrix: (cols: ($($cid:tt),*), rows: ($($rid:tt),*)), keys: ($(($c:tt, $r:tt)),*)) => {
         paste::paste! {
-            pub struct PrimaryKB {
-                pub matrices: (
-                    $((
-                        ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
-                        ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
-                    ),),*
+            pub struct SecondaryKB {
+                pub matrix: (
+                    ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
+                    ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
                 ),
-                pub keys: rkb2040_proc::matrix_to_states!($crate::pin::PinState<$delay>, $((($($cid),*), ($($rid),*))),*),
-                pub tx: $rx,
-                pub sm: $sm,
+                pub keys: rkb2040_proc::keys_to_states!($crate::pin::PinState<$delay>, $(($c, $r)),*),
+                pub tx: $tx,
             }
 
-            impl PrimaryKB {
+            impl SecondaryKB {
                 #[must_use]
                 pub fn new(
-                    matrices: (
-                        $((
-                            ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
-                            ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
-                        ),),*
+                    matrix: (
+                        ($(Option<$crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $cid >]>>),*,),
+                        ($($crate::pin::KeyPin<rp2040_hal::gpio::bank0::[< Gpio $rid >]>),*,),
                     ),
-                    keys: rkb2040_proc::matrix_to_states!($crate::pin::PinState<$delay>, $((($($cid),*), ($($rid),*))),*),
+                    keys: rkb2040_proc::keys_to_states!($crate::pin::PinState<$delay>, $(($c, $r)),*),
                     tx: $tx,
-                    sm: $sm,
                 ) -> Self {
-                    Self { matrices, keys, tx, sm }
+                    Self { matrix, keys, tx }
                 }
 
                 pub fn scan(&mut self, timer: rp2040_hal::Timer) {
-                    self.sm.begin_scan();
-                    rkb2040_proc::matrix_pin_check!(self, timer, $((($($cid),*), ($($rid),*))),*);
-                    self.sm.finish_scan();
+                    rkb2040_proc::matrix_pin_check!(self, timer, (($($cid),*), ($($rid),*)), $(($c, $r)),*);
                 }
             }
 
             macro_rules! init_secondary_pins {
                 ($_pins:ident) => {(
                     (
-                        $((
-                            ($(Some($_pins.[< gpio $cid >].into_pull_up_input())),*,),
-                            ($($_pins.[< gpio $rid >].into_pull_up_input()),*,),
-                        ),),*
+                        ($(Some($_pins.[< gpio $cid >].into_pull_up_input())),*,),
+                        ($($_pins.[< gpio $rid >].into_pull_up_input()),*,),
                     ),
-                    rkb2040_proc::matrix_to_states_init!($crate::pin::PinState, $((($($cid),*), ($($rid),*))),*)
+                    rkb2040_proc::keys_to_states_init!($crate::pin::PinState, $(($c, $r)),*)
                 )}
             }
-            pub(crate) use init_primary_pins;
+            pub(crate) use init_secondary_pins;
         }
     };
 }
