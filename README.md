@@ -31,7 +31,8 @@ To flash the firmware: set your board into bootloader mode, mount the board's
 mass storage device to your computers file system and copy the file
 `target/thumbv6m-none-eabi/lto/rkb2040.uf2` to it.
 
-> [!NOTE] Assuming there is no automatic drive mounting and that no other SATA
+> [!NOTE]
+> Assuming there is no automatic drive mounting and that no other SATA
 > drives are connected, the `build.sh` script will do the previous steps
 > automatically (possibly leaving you with a new `/mnt/usb1` directory). The
 > script is there only for my own convenience but it might prove useful to you.
@@ -50,15 +51,16 @@ To do so add a new sub-module to the `rkb2040::keyboards` module. For a direct
 wiring layout example look at `rkb2040/keyboards/sweep2` and for a matrix
 layout example look at `rkb2040/keyboards/skeletyl`.
 
-> [!NOTE] Custom bsp's for the
-> [sea-picro](https://github.com/joshajohnson/sea-picro) and the
-> [splinky](https://github.com/Bastardkb/Splinky) are included in the `bsp/`
-> directory. You can find many more
+> [!NOTE]
+> Custom bsp's for the [sea-picro](https://github.com/joshajohnson/sea-picro)
+> and the [splinky](https://github.com/Bastardkb/Splinky) are included in the
+> `bsp/` directory. You can find many more
 > [here](https://github.com/rp-rs/rp-hal-boards), courtesy of the fine folks at
 > the rp-hal project.
 
-> [!IMPORTANT] Keybinds are assigned left to right, top to bottom, following
-> the order of keys specified in the hardware layout definition.
+> [!IMPORTANT]
+> Keybinds are assigned left to right, top to bottom, following the order of
+> keys specified in the hardware layout definition.
 
 ## TODOs
 
