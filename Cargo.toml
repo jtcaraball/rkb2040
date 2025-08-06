@@ -1,11 +1,12 @@
 [workspace]
 resolver = "3"
-members = [ "bsp/sea-picro", "rkb2040-proc", "rkb2040", "rkb2040-lib"]
+members = [ "bsp/sea-picro", "bsp/splinky", "rkb2040-proc", "rkb2040", "rkb2040-lib"]
 
 [workspace.dependencies]
 rkb2040-lib = { path = "rkb2040-lib" }
 rkb2040-proc = { path = "rkb2040-proc" }
 sea-picro = { path = "bsp/sea-picro" }
+splinky = { path = "bsp/splinky" }
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
 critical-section = "1.2.0"
