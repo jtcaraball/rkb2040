@@ -65,7 +65,7 @@ layout example look at `rkb2040/keyboards/skeletyl`.
 ## TODOs
 
 - Add support for 'COL2ROW' matrix scanning.
-- Add logic for entering bootloader mode nicely.
+- ~~Add logic for entering bootloader mode nicely~~.
 
 ## Acknowledgements
 

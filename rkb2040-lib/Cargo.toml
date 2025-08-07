@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 rp2040-hal.workspace = true
+embedded-hal.workspace = true
 pio-uart.workspace = true
 paste.workspace = true
 usb-device.workspace = true
