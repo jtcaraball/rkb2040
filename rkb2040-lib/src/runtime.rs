@@ -15,7 +15,7 @@ macro_rules! hardware_init {
         .ok()
         .unwrap();
 
-        let $timer = $bsp::hal::Timer::new($pac.TIMER, &mut $pac.RESETS, &$clocks);
+        let mut $timer = $bsp::hal::Timer::new($pac.TIMER, &mut $pac.RESETS, &$clocks);
         let mut $scan_cd = $timer.count_down();
         $scan_cd.start($scan_freq.millis());
 

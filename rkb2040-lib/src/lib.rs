@@ -1,6 +1,7 @@
 #![cfg_attr(not(test), no_std)]
 
 pub mod keyboard;
+pub mod bootloader;
 pub mod keymap;
 pub mod pin;
 pub mod queue;
