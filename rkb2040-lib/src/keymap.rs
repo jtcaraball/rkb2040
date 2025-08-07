@@ -259,8 +259,10 @@ impl<const N: usize, const M: usize> KeymapSM<N, M> {
                     }
                 }
                 Keybind::OneShot(m) => {
+                    scan_is_reportable |= state.changed;
                     if state.pressed {
                         self.one_shots.add(m.to_byte());
+                        let _ = self.curr_scan.add(m.to_key());
                     } else if state.changed {
                         self.one_shots.remove_if_used(m.to_byte());
                     }
