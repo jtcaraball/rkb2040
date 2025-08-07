@@ -13,7 +13,8 @@ use crate::keyboards::skeletyl::{
     keymap::KEYMAP,
 };
 use rkb2040_lib::{
-    hardware_init, keymap::KeymapSM, run_primary_keyboard, run_secondary_keyboard, usb_init,
+    bootloader::bootloader_double_tap_reset, hardware_init, keymap::KeymapSM, run_primary_keyboard,
+    run_secondary_keyboard, usb_init,
 };
 
 const SCAN_FREQ_MILLIS: u32 = 1;
@@ -22,6 +23,9 @@ const SERIAL: &str = "swp2.1";
 
 pub fn run() -> ! {
     hardware_init!((bsp, SCAN_FREQ_MILLIS) -> pac, clocks, timer, pins, scan_cd);
+    // Enter bootloader mode if the board is reset twice withing 500 ms and turn on led connected
+    // to gpio17 to indicate it.
+    bootloader_double_tap_reset(&mut timer, 500, 1 << 17);
     // Primary board detection.
     if pins.vbus_detect.into_pull_up_input().is_high().unwrap() {
         usb_init!((bsp, pac, clocks, timer, PRODUCT_NAME, SERIAL) -> hid_dev, usb_dev, tick_cd);
