@@ -4,8 +4,11 @@ An extensible keyboard firmware for rp2040 based boards written in rust.
 Although I use it on my own keyboard, this project's main goal was to learn the
 rust programming language.
 
+Grass fed, free range and LLM free code.
+
 ## Features
 
+- ~1kHz polling rate.
 - Customizable pin layout.
 - Support for direct and matrix wiring layouts.
 - Layers.
@@ -66,6 +69,7 @@ layout example look at `rkb2040/keyboards/skeletyl`.
 
 - Add support for 'COL2ROW' matrix scanning.
 - ~~Add logic for entering bootloader mode nicely~~.
+- Add option for right side primary keyboard.
 
 ## Acknowledgements
 
