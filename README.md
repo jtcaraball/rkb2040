@@ -1,10 +1,10 @@
 # RKB2040
 
 An extensible keyboard firmware for rp2040 based boards written in rust.
-Although I use it on my own keyboard, this project's main goal was to learn the
+Although I use it on my own keyboard, the project's main goal was to learn the
 rust programming language.
 
-Grass fed, free range and LLM free code.
+This project is made with 100% grass fed, free range and LLM free code.
 
 ## Features
 
@@ -26,8 +26,8 @@ tool for doing it). With this requirements met, running the following
 commands at the root of the project will build our firmware.
 
 ```bash
-    cargo build --profile lto --no-default-features --features={keyboard} &&
-    elf2uf2-rs target/thumbv6m-none-eabi/lto/rkb2040
+cargo build --profile lto --no-default-features --features={keyboard} &&
+elf2uf2-rs target/thumbv6m-none-eabi/lto/rkb2040
 ```
 
 To flash the firmware: set your board into bootloader mode, mount the board's
