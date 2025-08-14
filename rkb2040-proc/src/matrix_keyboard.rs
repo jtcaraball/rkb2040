@@ -147,6 +147,22 @@ impl Parse for MatrixKBDesc {
     }
 }
 
+macro_rules! wait_block {
+    ($timer:expr, $t:tt) => {
+        quote! {
+            let start = $timer.get_counter();
+            loop {
+                let Some(dur) = $timer.get_counter().checked_duration_since(start) else {
+                    continue;
+                };
+                if dur.to_nanos() >= $t {
+                    break;
+                }
+            }
+        }
+    };
+}
+
 pub fn matrix_pin_check_impl(input: TokenStream) -> TokenStream {
     let desc = parse_macro_input!(input as MatrixKBDesc);
     let kb = desc.kb;
@@ -177,9 +193,11 @@ pub fn matrix_pin_check_impl(input: TokenStream) -> TokenStream {
         }
         if !row_checks.is_empty() {
             let c_idx = Index::from(c_idx);
+            let wait: proc_macro2::TokenStream = wait_block!(timer, 250);
             checks.push(quote!({
                 let col = unsafe { #kb.matrix.0.#c_idx.take().unwrap_unchecked()};
                 let col = col.into_push_pull_output_in_state(rp2040_hal::gpio::PinState::Low);
+                #wait
                 let bank = rp2040_hal::Sio::read_bank0();
                 #kb.matrix.0.#c_idx = Some(col.into_pull_up_input());
                 #(#row_checks)*
@@ -197,56 +215,6 @@ pub fn matrix_pin_check_impl(input: TokenStream) -> TokenStream {
     )
     .into()
 }
-
-// pub fn matrix_pin_check_impl(input: TokenStream) -> TokenStream {
-//     let desc = parse_macro_input!(input as MatrixPinDesc);
-//     let kb = desc.kb;
-//     let timer = desc.timer;
-//     let mut offset = 0;
-//     let mut checks = Vec::<proc_macro2::TokenStream>::new();
-//     for (m_idx, matrix) in desc.matrices.0.iter().enumerate() {
-//         let col_settle_mask: u32 = matrix
-//             .rows
-//             .iter()
-//             .map(|row| 1 << row.base10_parse::<u8>().unwrap())
-//             .reduce(|acc, e| acc | e)
-//             .unwrap();
-//         for (c_idx, _) in matrix.columns.iter().enumerate() {
-//             let row_checks = matrix.rows.iter().enumerate().map(|(r_idx, row)| {
-//                 let index = Index::from((r_idx * matrix.columns.len()) + c_idx + offset);
-//                 quote!({
-//                     let key_mask: u32 = 1 << #row;
-//                     let pressed = bank & key_mask == 0;
-//                     if #kb.keys.#index.pressed != pressed &&
-//                         #kb.keys.#index.debounce.update(#timer.get_counter(), pressed) {
-//                         #kb.keys.#index.pressed = pressed;
-//                         #kb.tx.send_byte(if pressed {#index + 0b1000_0000} else {#index});
-//                     }
-//                 })
-//             });
-//             let m_idx = Index::from(m_idx);
-//             let c_idx = Index::from(c_idx);
-//             checks.push(quote!({
-//                 let col = unsafe { #kb.matrices.#m_idx.0.#c_idx.take().unwrap_unchecked()};
-//                 let col = col.into_push_pull_output_in_state(rp2040_hal::gpio::PinState::Low);
-//                 let bank = rp2040_hal::Sio::read_bank0();
-//                 #kb.matrices.#m_idx.0.#c_idx = Some(col.into_pull_up_input());
-//                 #(#row_checks)*
-//                 while rp2040_hal::Sio::read_bank0() & #col_settle_mask != #col_settle_mask {}
-//             }));
-//         }
-//         offset += matrix.columns.len() * matrix.rows.len();
-//     }
-//     let checks_iter = checks.into_iter();
-//     quote!(
-//         #(
-//             {
-//                 #checks_iter
-//             }
-//         )*
-//     )
-//     .into()
-// }
 
 #[expect(clippy::cast_possible_truncation)]
 pub fn matrix_pin_rx_check_impl(input: TokenStream) -> TokenStream {
@@ -283,9 +251,11 @@ pub fn matrix_pin_rx_check_impl(input: TokenStream) -> TokenStream {
         }
         if !row_checks.is_empty() {
             let c_idx = Index::from(c_idx);
+            let wait: proc_macro2::TokenStream = wait_block!(timer, 250);
             checks.push(quote!({
                 let col = unsafe { #kb.matrix.0.#c_idx.take().unwrap_unchecked()};
                 let col = col.into_push_pull_output_in_state(rp2040_hal::gpio::PinState::Low);
+                #wait
                 let bank = rp2040_hal::Sio::read_bank0();
                 #kb.matrix.0.#c_idx = Some(col.into_pull_up_input());
                 #(#row_checks)*
@@ -303,63 +273,3 @@ pub fn matrix_pin_rx_check_impl(input: TokenStream) -> TokenStream {
     )
     .into()
 }
-
-// #[expect(clippy::cast_possible_truncation)]
-// pub fn matrix_pin_rx_check_impl(input: TokenStream) -> TokenStream {
-//     let desc = parse_macro_input!(input as MatrixPinDesc);
-//     let kb = desc.kb;
-//     let timer = desc.timer;
-//     let key_count: u8 = desc
-//         .matrices
-//         .0
-//         .iter()
-//         .map(|m| (m.columns.len() * m.rows.len()) as u8)
-//         .sum();
-//     let mut offset = 0;
-//     let mut checks = Vec::<proc_macro2::TokenStream>::new();
-//     for (m_idx, matrix) in desc.matrices.0.iter().enumerate() {
-//         let col_settle_mask: u32 = matrix
-//             .rows
-//             .iter()
-//             .map(|row| 1 << row.base10_parse::<u8>().unwrap())
-//             .reduce(|acc, e| acc | e)
-//             .unwrap();
-//         for (c_idx, _) in matrix.columns.iter().enumerate() {
-//             let row_checks = matrix.rows.iter().enumerate().map(|(r_idx, row)| {
-//                 let index = Index::from((r_idx * matrix.columns.len()) + c_idx + offset);
-//                 quote!({
-//                     let key_mask: u32 = 1 << #row;
-//                     let pressed = bank & key_mask == 0;
-//                     if #kb.keys.#index.pressed != pressed &&
-//                         #kb.keys.#index.debounce.update(#timer.get_counter(), pressed) {
-//                         #kb.keys.#index.pressed = pressed;
-//                         #kb.sm.register_press(if pressed {#index + 0b1000_0000} else {#index});
-//                     }
-//                     if let Some(msg) = #kb.rx.receive_byte() {
-//                         #kb.sm.register_press(msg + #key_count);
-//                     }
-//                 })
-//             });
-//             let m_idx = Index::from(m_idx);
-//             let c_idx = Index::from(c_idx);
-//             checks.push(quote!({
-//                 let col = unsafe { #kb.matrices.#m_idx.0.#c_idx.take().unwrap_unchecked()};
-//                 let col = col.into_push_pull_output_in_state(rp2040_hal::gpio::PinState::Low);
-//                 let bank = rp2040_hal::Sio::read_bank0();
-//                 #kb.matrices.#m_idx.0.#c_idx = Some(col.into_pull_up_input());
-//                 #(#row_checks)*
-//                 while rp2040_hal::Sio::read_bank0() & #col_settle_mask != #col_settle_mask {}
-//             }));
-//         }
-//         offset += matrix.columns.len() * matrix.rows.len();
-//     }
-//     let checks_iter = checks.into_iter();
-//     quote!(
-//         #(
-//             {
-//                 #checks_iter
-//             }
-//         )*
-//     )
-//     .into()
-// }
