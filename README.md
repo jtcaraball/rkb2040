@@ -19,11 +19,12 @@ This project is made with 100% grass fed, free range and LLM free code.
 
 To build the firmware you will need to install
 [rust](https://www.rust-lang.org/), the toolchain for the ARM Cortex-M0+
-[target](https://doc.rust-lang.org/rustc/platform-support/thumbv6m-none-eabi.html)
-and tooling to convert the elf binary to uf2
+[target](https://doc.rust-lang.org/rustc/platform-support/thumbv6m-none-eabi.html),
+tooling to convert the elf binary to uf2
 ([elf2uf2-rs](https://github.com/JoNil/elf2uf2-rs) seems to be the de facto
-tool for doing it). With this requirements met, running the following
-commands at the root of the project will build our firmware.
+tool for doing it) and the [lld](https://lld.llvm.org/) linker. With this
+requirements met, running the following commands at the root of the project
+will build our firmware.
 
 ```bash
 cargo build --profile lto --no-default-features --features={keyboard} &&
