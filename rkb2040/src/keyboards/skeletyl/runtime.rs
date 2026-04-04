@@ -18,8 +18,8 @@ use rkb2040_lib::{
 };
 
 const SCAN_FREQ_MILLIS: u32 = 1;
-const PRODUCT_NAME: &str = "sweep2";
-const SERIAL: &str = "swp2.1";
+const PRODUCT_NAME: &str = "skeletyl";
+const SERIAL: &str = "skly.4";
 
 pub fn run() -> ! {
     hardware_init!((bsp, SCAN_FREQ_MILLIS) -> pac, clocks, timer, pins, scan_cd);
