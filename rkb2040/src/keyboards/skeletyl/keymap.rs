@@ -38,12 +38,12 @@ pub const KEYMAP: [[Keybind; KCOUNT]; LCOUNT] = [
     // Layer 2
     [
         // Left
-        NA!(), NA!(), NA!(), LC!(R), NA!(),
+        NA!(), LC!(W), NA!(), LC!(R), NA!(),
         OS_LG!(), OS_LS!(), OS_LC!(), OS_LA!(), NA!(),
         LC!(Z), LC!(X), LC!(C), LC!(V), NA!(),
         NA!(), NA!(), NA!(),
         // Right
-        NA!(), LC!(D), LC!(U), NA!(), NA!(),
+        NA!(), LC!(D), LC!(U), LC!(O), LC!(I),
         NA!(), KC!(Escape), KC!(Tab), KC!(DeleteBackspace), NA!(),
         KC!(LeftArrow), KC!(DownArrow), KC!(UpArrow), KC!(RightArrow), NA!(),
         KC!(ReturnEnter), NA!(), NA!(),
