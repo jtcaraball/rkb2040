@@ -33,7 +33,7 @@ pub const KEYMAP: [[Keybind; KCOUNT]; LCOUNT] = [
         KC!(Equal), KC!(Keyboard7), KC!(Keyboard8), KC!(Keyboard9), KC!(Keyboard0),
         KC!(Minus), KC!(Keyboard4), KC!(Keyboard5), KC!(Keyboard6), KC!(LeftBrace),
         KC!(Apostrophe), KC!(Keyboard1), KC!(Keyboard2), KC!(Keyboard3), KC!(RightBrace),
-        NA!(), MO!(3),
+        MO!(3), NA!(),
     ],
     // Layer 2
     [
@@ -57,7 +57,7 @@ pub const KEYMAP: [[Keybind; KCOUNT]; LCOUNT] = [
         NA!(), NA!(),
         // Right
         KC!(DeleteForward), KC!(F7), KC!(F8), KC!(F9), KC!(F10),
-        KC!(Insert), KC!(J), KC!(K), KC!(L), KC!(Semicolon),
+        KC!(Insert), KC!(F4), KC!(F5), KC!(F6), KC!(Semicolon),
         KC!(PrintScreen), KC!(F1), KC!(F2), KC!(F3), KC!(F12),
         NA!(), NA!(),
     ]
